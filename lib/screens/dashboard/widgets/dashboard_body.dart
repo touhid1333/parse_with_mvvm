@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:parse_with_mvvm/common/services/custom_methods.dart';
 import 'package:parse_with_mvvm/common/widgets/custom_progress.dart';
 import 'package:parse_with_mvvm/common/widgets/show_dialog.dart';
 import 'package:parse_with_mvvm/models/fav_games_model.dart';
@@ -98,6 +100,8 @@ class _DashboardBodyState extends State<DashboardBody> {
                           gameRatingController.clear();
                           widget.viewmodel.pickedGameImage = null;
                           widget.viewmodel.turnIdle();
+                          Future.delayed(const Duration(seconds: 5))
+                              .then((_) async => await createNotification());
                         }
                       }
                     }
@@ -212,6 +216,19 @@ class _DashboardBodyState extends State<DashboardBody> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Future<void> createNotification() async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: createUID(),
+        channelKey: 'default_notifications',
+        title: 'Favorite Game Creation',
+        body: 'New game added to your account. Happy Gaming.',
+        notificationLayout: NotificationLayout.BigPicture,
+        bigPicture: "https://www.dw.com/image/49519617_303.jpg"
       ),
     );
   }

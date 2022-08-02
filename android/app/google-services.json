@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "590510665078",
+    "project_id": "push-notification-test-fa52e",
+    "storage_bucket": "push-notification-test-fa52e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:590510665078:android:a1a404509ff0f1ce049e57",
+        "android_client_info": {
+          "package_name": "com.touhid.parse_with_mvvm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "590510665078-piug3hh6hdjpbieb9b8vu59vg8qg0c7m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWDpfnEpzMe3RFD_36OUqeXMmQ63cnM50"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "590510665078-piug3hh6hdjpbieb9b8vu59vg8qg0c7m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
