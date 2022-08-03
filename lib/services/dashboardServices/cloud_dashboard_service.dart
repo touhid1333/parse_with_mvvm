@@ -4,7 +4,7 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:parse_with_mvvm/models/fav_game_cloud_model.dart';
 
 abstract class CloudDashboardService {
-  Future<void> addGameToCloud(FavGameCloudModel item, String currentUser);
+  Future<void> addGameToCloud(FavGameCloudModel item, ParseUser currentUser);
 
   Stream<QuerySnapshot<FavGameCloudModel>> getAllGames(ParseUser currentUser);
 

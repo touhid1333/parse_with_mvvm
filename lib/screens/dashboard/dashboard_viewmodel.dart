@@ -116,7 +116,7 @@ class DashboardViewModel extends Viewmodel {
           gameName: gameName,
           gameRating: int.parse(gameRating),
           imageUrl: path.basename(pickedGameImage!.path));
-      await _cloudService.addGameToCloud(item, "lTHWMNIA2D");
+      await _cloudService.addGameToCloud(item, currentUser!);
     }
   }
 

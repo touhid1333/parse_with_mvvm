@@ -17,10 +17,10 @@ class CloudDashboardServiceIMPL extends CloudDashboardService {
 
   @override
   Future<void> addGameToCloud(
-      FavGameCloudModel item, String currentUser) async {
+      FavGameCloudModel item, ParseUser currentUser) async {
     final docRef = cloudDB
         .collection("FavGames")
-        .doc(currentUser)
+        .doc(currentUser.objectId)
         .collection("allGames")
         .withConverter(
             fromFirestore: FavGameCloudModel.fromFirestore,
