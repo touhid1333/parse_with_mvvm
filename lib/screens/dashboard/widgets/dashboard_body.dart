@@ -1,12 +1,14 @@
 import 'dart:io';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:parse_with_mvvm/common/services/custom_methods.dart';
 import 'package:parse_with_mvvm/common/widgets/custom_progress.dart';
 import 'package:parse_with_mvvm/common/widgets/show_dialog.dart';
+import 'package:parse_with_mvvm/models/fav_game_cloud_model.dart';
 import 'package:parse_with_mvvm/models/fav_games_model.dart';
 import 'package:parse_with_mvvm/screens/Filter/filter_view.dart';
 import 'package:parse_with_mvvm/screens/dashboard/dashboard_viewmodel.dart';
@@ -89,7 +91,8 @@ class _DashboardBodyState extends State<DashboardBody> {
               ),
               ElevatedButton(
                   onPressed: () async {
-                    if (gameNameController.text.isNotEmpty &&
+                    //---------Code for PARSE-------------
+                    /*if (gameNameController.text.isNotEmpty &&
                         gameRatingController.text.isNotEmpty) {
                       if (widget.viewmodel.pickedGameImage != null) {
                         bool reponse = await widget.viewmodel.saveNewFavGame(
@@ -103,6 +106,21 @@ class _DashboardBodyState extends State<DashboardBody> {
                           Future.delayed(const Duration(seconds: 5))
                               .then((_) async => await createNotification());
                         }
+                      }
+                    }*/
+
+                    //Code for -------------------Cloud---------------
+                    if (gameNameController.text.isNotEmpty &&
+                        gameRatingController.text.isNotEmpty) {
+                      if (widget.viewmodel.pickedGameImage != null) {
+                        await widget.viewmodel.saveGameToCloud(
+                            gameNameController.text, gameRatingController.text);
+                        gameNameController.clear();
+                        gameRatingController.clear();
+                        widget.viewmodel.pickedGameImage = null;
+                        widget.viewmodel.turnIdle();
+                        Future.delayed(const Duration(seconds: 1))
+                            .then((_) async => await createNotification());
                       }
                     }
                   },
@@ -147,7 +165,8 @@ class _DashboardBodyState extends State<DashboardBody> {
                   ),
                 ],
               ),
-              Expanded(
+              //future builder for parse
+              /*Expanded(
                   child: FutureBuilder<List<FavGamesModel>>(
                 future: widget.viewmodel.getAllFav(),
                 builder: (context, snapshot) {
@@ -209,7 +228,39 @@ class _DashboardBodyState extends State<DashboardBody> {
                       }
                   }
                 },
-              )),
+              )),*/
+              //stream builder for cloud
+              Expanded(
+                  child: FutureBuilder<List<FavGameCloudModel>>(
+                      future: widget.viewmodel.getFutureGames(),
+                      builder: (context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasError) {
+                          return Text('Something went wrong');
+                        }
+
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Text("Loading");
+                        }
+                        return ListView.builder(
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              FavGameCloudModel item = snapshot.data[index];
+                              return ListTile(
+                                leading: item.imageUrl != null
+                                    ? SizedBox(
+                                        height: 40,
+                                        width: 40,
+                                        child: Image.network(
+                                          item.imageUrl!,
+                                          fit: BoxFit.fill,
+                                        ),
+                                      )
+                                    : null,
+                                title: Text(item.gameName!),
+                              );
+                            });
+                      })),
               const SizedBox(
                 height: 16,
               ),
@@ -223,13 +274,12 @@ class _DashboardBodyState extends State<DashboardBody> {
   Future<void> createNotification() async {
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id: createUID(),
-        channelKey: 'default_notifications',
-        title: 'Favorite Game Creation',
-        body: 'New game added to your account. Happy Gaming.',
-        notificationLayout: NotificationLayout.BigPicture,
-        bigPicture: "https://www.dw.com/image/49519617_303.jpg"
-      ),
+          id: createUID(),
+          channelKey: 'default_notifications',
+          title: 'Favorite Game Creation',
+          body: 'New game added to your account. Happy Gaming.',
+          notificationLayout: NotificationLayout.BigPicture,
+          bigPicture: "https://www.dw.com/image/49519617_303.jpg"),
     );
   }
 }
